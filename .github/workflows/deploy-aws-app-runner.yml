@@ -45,8 +45,9 @@ jobs:
         if: ${{ inputs.environment }} == 'Staging'
         id: push
         run: |
-          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main
-          docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:main ${{ secrets.AWS_ACCOUNT_NUMBER }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/${{ github.event.repository.name }}
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 223576871074.dkr.ecr.us-east-1.amazonaws.com
+          docker build -t 04_05_ci_cd_for_container_images .
+          docker tag 04_05_ci_cd_for_container_images:latest 223576871074.dkr.ecr.us-east-1.amazonaws.com/04_05_ci_cd_for_container_images:latest
           docker push 223576871074.dkr.ecr.us-east-1.amazonaws.com/04_05_ci_cd_for_container_images:latest
 
       - name: Deploy production with aws CLI
